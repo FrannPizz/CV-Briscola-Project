@@ -1,0 +1,27 @@
+Partita: game4
+
+Round 1: North 3 di Bastoni | South 8 di Bastoni | Briscola ?? | Leader South | Winner North | Punti 12   [briscola non determinata; ]
+Round 2: North ?? | South 2 di Bastoni | Briscola ?? | Leader South | Winner South | Punti 0   [briscola non determinata; carta North non trovata; ]
+Round 3: North 7 di Coppe | South 6 di Spade | Briscola ?? | Leader South | Winner South | Punti 0   [briscola non determinata; ]
+Round 4: North 10 di Bastoni | South 6 di Bastoni | Briscola ?? | Leader South | Winner North | Punti 4   [briscola non determinata; ]
+Round 5: North 4 di Spade | South 4 di Coppe | Briscola ?? | Leader North | Winner North | Punti 0   [briscola non determinata; ]
+Round 6: North 10 di Coppe | South 4 di Denari | Briscola ?? | Leader North | Winner North | Punti 4   [briscola non determinata; ]
+Round 7: North 7 di Bastoni | South 3 di Spade | Briscola ?? | Leader South | Winner South | Punti 10   [briscola non determinata; ]
+Round 8: North 5 di Coppe | South 6 di Coppe | Briscola ?? | Leader South | Winner South | Punti 0   [briscola non determinata; ]
+Round 9: North 8 di Denari | South 7 di Spade | Briscola ?? | Leader South | Winner South | Punti 2   [briscola non determinata; ]
+Round 10: North ?? | South 4 di Bastoni | Briscola ?? | Leader South | Winner South | Punti 0   [briscola non determinata; carta North non trovata; ]
+Round 11: North 2 di Denari | South 5 di Denari | Briscola ?? | Leader South | Winner South | Punti 0   [briscola non determinata; ]
+Round 12: North 9 di Spade | South 2 di Spade | Briscola ?? | Leader South | Winner North | Punti 3   [briscola non determinata; ]
+Round 13: North 9 di Bastoni | South 10 di Denari | Briscola ?? | Leader North | Winner North | Punti 7   [briscola non determinata; ]
+Round 14: North 10 di Spade | South 8 di Spade | Briscola ?? | Leader South | Winner North | Punti 6   [briscola non determinata; ]
+Round 15: North 9 di Coppe | South 5 di Bastoni | Briscola ?? | Leader North | Winner North | Punti 3   [briscola non determinata; ]
+Round 16: North 1 di Denari | South 5 di Spade | Briscola ?? | Leader North | Winner North | Punti 11   [briscola non determinata; ]
+Round 17: North 8 di Coppe | South 7 di Denari | Briscola ?? | Leader North | Winner North | Punti 2   [briscola non determinata; ]
+Round 18: North 1 di Coppe | South 2 di Coppe | Briscola ?? | Leader South | Winner North | Punti 11   [briscola non determinata; ]
+Round 19: North 6 di Denari | South 1 di Spade | Briscola ?? | Leader North | Winner North | Punti 11   [briscola non determinata; ]
+Round 20: North 3 di Coppe | South 3 di Denari | Briscola ?? | Leader North | Winner North | Punti 20   [briscola non determinata; ]
+
+Punteggio finale:
+  North: 94
+  South: 12
+Vincitore: North

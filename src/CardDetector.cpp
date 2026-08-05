@@ -40,7 +40,37 @@ std::vector<DetectedCard> detect(const cv::Mat& frame, const Params& p)
         }
     }
 
-    return detectedCards;
+    return dedupCards(detectedCards, frame.size(), p);
+}
+
+//with RETR_LIST the same card yields 2-3 nested contours (outer edge, inner printed
+//frame): keep only the largest one per position, so a card is reported once
+std::vector<DetectedCard> dedupCards(const std::vector<DetectedCard>& cards,
+                                     cv::Size frameSize, const Params& p)
+{
+    //largest first, so the survivor of each group is the outer contour
+    std::vector<DetectedCard> sorted = cards;
+    std::sort(sorted.begin(), sorted.end(),
+              [](const DetectedCard& a, const DetectedCard& b) {
+                  return cv::contourArea(a.corners) > cv::contourArea(b.corners);
+              });
+
+    const double minDistance = p.dupRadiusRatio * frameSize.width;
+
+    std::vector<DetectedCard> kept;
+    for (const DetectedCard& card : sorted) {
+        bool duplicate = false;
+        for (const DetectedCard& k : kept) {
+            if (cv::norm(k.centroid - card.centroid) < minDistance) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (!duplicate)
+            kept.push_back(card);
+    }
+
+    return kept;
 }
 
 //edge mask: suppress texture, then Canny + morphological closing
@@ -65,7 +95,12 @@ cv::Mat edgeMask(const cv::Mat& gray, const Params& p)
 std::vector<std::vector<cv::Point>> findCandidates(const cv::Mat& mask)
 {
     std::vector<std::vector<cv::Point>> contours;
-    cv::findContours(mask, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+    //RETR_LIST, non RETR_EXTERNAL: sulle tovaglie a fantasia la trama produce edge che
+    //TOCCANO il bordo delle carte, quindi il contorno della carta non e' piu' esterno ma
+    //interno alla componente connessa del tessuto. Con RETR_EXTERNAL le carte spariscono
+    //e restano solo le strisce del tessuto (aspect ~0.02). RETR_LIST restituisce tutti i
+    //contorni e le carte tornano fuori con extent ~0.97 e aspect ~0.50.
+    cv::findContours(mask, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
     return contours;
 }
 

@@ -23,6 +23,9 @@ struct Params {
     int    medianKernel   = 5;
     int    closeKernel    = 5;
     double cannySigma     = 0.33;
+    //due rilevamenti piu' vicini di questa frazione della larghezza del frame sono
+    //la stessa carta (contorni annidati restituiti da RETR_LIST)
+    double dupRadiusRatio = 0.05;
 };
 
 std::vector<DetectedCard> detect(const cv::Mat& frame, const Params& p = Params());
@@ -36,5 +39,7 @@ std::vector<std::vector<cv::Point>> findCandidates(const cv::Mat& mask);
 bool isCardQuad(const std::vector<cv::Point>& contour,   cv::Size frameSize, const Params& p, std::vector<cv::Point>& quad);
 
 DetectedCard buildCard(const std::vector<cv::Point>& quad, cv::Size frameSize);
+
+std::vector<DetectedCard> dedupCards(const std::vector<DetectedCard>& cards, cv::Size frameSize, const Params& p);
 
 #endif 
