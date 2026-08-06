@@ -1,6 +1,7 @@
 //Author: Francesco Pizzato
 
 #include "../include/CardRecognizer.h"
+#include <opencv2/calib3d.hpp>
 #include <opencv2/features2d.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <iostream>
@@ -77,6 +78,43 @@ int countGoodMatches(const cv::Mat& descA, const cv::Mat& descB)
     return goodMatchesCount;
 }
 
+//same matching as countGoodMatches, then a geometric check: only the matches that fit
+//a single homography (RANSAC inliers) are counted. Tells apart cards whose pips are
+//the same drawing repeated a different number of times, which the ratio test cannot do
+int countInliers(const std::vector<cv::KeyPoint>& keypointsA, const cv::Mat& descA,
+                 const std::vector<cv::KeyPoint>& keypointsB, const cv::Mat& descB)
+{
+    if (descA.empty() || descB.empty())
+        return 0;
+
+    cv::BFMatcher matcher(cv::NORM_HAMMING);
+    std::vector<std::vector<cv::DMatch>> knn;
+    matcher.knnMatch(descA, descB, knn, 2);
+
+    //same Lowe ratio test as before, but here the matches are kept, not just counted
+    std::vector<cv::Point2f> ptsA;
+    std::vector<cv::Point2f> ptsB;
+    for (int i = 0; i < knn.size(); ++i) {
+        const std::vector<cv::DMatch>& m = knn[i];
+        if (m.size() == 2 && m[0].distance < 0.75f * m[1].distance) {
+            ptsA.push_back(keypointsA[m[0].queryIdx].pt);
+            ptsB.push_back(keypointsB[m[0].trainIdx].pt);
+        }
+    }
+
+    //an homography needs at least 4 point pairs
+    if (ptsA.size() < 4)
+        return 0;
+
+    //3.0 px of reprojection error: the card is rectified, so the residual distortion is small
+    cv::Mat inlierMask;
+    cv::Mat homography = cv::findHomography(ptsA, ptsB, cv::RANSAC, 3.0, inlierMask);
+    if (homography.empty() || inlierMask.empty())
+        return 0;
+
+    return cv::countNonZero(inlierMask);
+}
+
 int recognize(const cv::Mat& card, const std::vector<CardTemplate>& templates)
 {
     //compute ORB keypoints and descriptors for the input card image
@@ -84,28 +122,28 @@ int recognize(const cv::Mat& card, const std::vector<CardTemplate>& templates)
     cv::Mat cardDescriptors;
     computeORB(card, cardKeypoints, cardDescriptors);
 
-    //low threshold
-    const int MIN_GOOD_MATCHES = 15;
+    //inliers are far fewer than raw matches, so this threshold is lower than the old one
+    const int MIN_INLIERS = 8;
 
     //initialize variables to keep track of the best matching template
     int bestLabel = 0;
-    int maxGoodMatches = 0;
+    int maxInliers = 0;
 
-    //iterate through the loaded templates and find the one with the highest number of good matches
+    //iterate through the loaded templates and find the one with the most inliers
     for (int i = 0; i < templates.size(); ++i) {
         //get the current template
         const CardTemplate& t = templates[i];
 
-        int goodMatchesCount = countGoodMatches(cardDescriptors, t.descriptors);
+        int inlierCount = countInliers(cardKeypoints, cardDescriptors, t.keypoints, t.descriptors);
 
-        if (goodMatchesCount > maxGoodMatches) {
-            maxGoodMatches = goodMatchesCount;
+        if (inlierCount > maxInliers) {
+            maxInliers = inlierCount;
             bestLabel = t.label;
         }
     }
 
     //if the best match is bad, no match
-    if (maxGoodMatches < MIN_GOOD_MATCHES)
+    if (maxInliers < MIN_INLIERS)
         return 0;
 
     return bestLabel;

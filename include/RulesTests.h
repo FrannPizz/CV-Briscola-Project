@@ -1,4 +1,4 @@
-//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #ifndef RULESTESTS_H_INCLUDED
 #define RULESTESTS_H_INCLUDED
 

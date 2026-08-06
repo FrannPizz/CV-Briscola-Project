@@ -1,0 +1,12 @@
+Metriche - game3
+Ground truth: ..\data/game3resultsCORRECTED.csv
+
+A_card     : 27/40  (67.5%)
+A_player   : 31/40  (77.5%)
+A_briscola : 1/1
+A_result   : 0/3  (0%)
+
+Dettaglio A_result:
+  vincitore      predetto South  |  atteso North  -> ERRATO
+  punteggio North  predetto 15  |  atteso 70  -> ERRATO
+  punteggio South  predetto 68  |  atteso 50  -> ERRATO

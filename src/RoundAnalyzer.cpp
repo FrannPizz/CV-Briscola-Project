@@ -1,4 +1,4 @@
-﻿//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #include "../include/RoundAnalyzer.h"
 #include "../include/CardRectifier.h"
 #include "../include/GameRules.h"
@@ -11,8 +11,18 @@
 #include <opencv2/imgproc.hpp>
 #include <opencv2/videoio.hpp>
 
+/*
+this module turns a round video into a structured result. The detector works on a
+single frame, but the assignment asks for facts that only exist in time (who played
+first), so here the detections are followed across frames, grouped into tracks, and
+the labels are decided by majority vote instead of trusting any single frame
+*/
+
 // ---------------------------------------------------------------- CardTrack
 
+//label a maggioranza fra tutte quelle viste su questa track.
+//Lo 0 (non riconosciuta) e' escluso apposta: una carta vista male in meta' dei frame
+//e bene nell'altra meta' deve comunque risultare riconosciuta
 int CardTrack::bestLabel() const
 {
     int best = 0;
@@ -26,6 +36,7 @@ int CardTrack::bestLabel() const
     return best;
 }
 
+//quanti voti ha preso la label vincente: misura quanto e' solida la lettura
 int CardTrack::bestVotes() const
 {
     int bestCount = 0;
@@ -137,6 +148,8 @@ std::vector<CardTrack> collectTracks(const std::string& videoPath,
             const CardTrack& t = kept[i];
             std::cout << "    [" << i << "] " << cardName(t.card())
                       << "  half=" << (t.half == Half::North ? "N" : "S")
+                      << "  centro=(" << static_cast<int>(t.centroid.x) << ","
+                      << static_cast<int>(t.centroid.y) << ")"
                       << "  frame " << t.firstFrame << ".." << t.lastFrame
                       << "  viste=" << t.sightings
                       << "  nominate=" << t.namedSightings
@@ -174,6 +187,11 @@ int findDeckTrack(const std::vector<CardTrack>& tracks,
     return bestIndex;
 }
 
+/*
+La briscola non passa dal detector: sta sotto il mazzo, il suo contorno non si chiude
+e isCardQuad() la scarta sempre. Quindi si va di ORB diretto sui primi frame, dove la
+briscola c'e' di sicuro, e si vota fra i frame.
+*/
 Card recognizeBriscola(const std::string& videoPath,
                        const std::vector<CardTemplate>& templates,
                        const AnalyzerParams& params,
@@ -209,9 +227,12 @@ Card recognizeBriscola(const std::string& videoPath,
         if (descriptors.empty())
             continue;
 
+        //miglior template e secondo migliore, in una passata sola.
+        //Inlier e non match grezzi: qui l'immagine contiene molto sfondo, e lo sfondo
+        //matcha un po' con tutti i template senza mai stare in un'omografia coerente
         int bestLabel = 0, bestCount = 0, secondCount = 0;
         for (const CardTemplate& t : templates) {
-            const int n = countGoodMatches(descriptors, t.descriptors);
+            const int n = countInliers(keypoints, descriptors, t.keypoints, t.descriptors);
             if (n > bestCount) {
                 secondCount = bestCount;
                 bestCount   = n;
@@ -252,12 +273,11 @@ void selectPlayedTracks(const std::vector<CardTrack>& tracks,
     northIndex = -1;
     southIndex = -1;
 
-    int northScore = 0;
-    int southScore = 0;
-
     //una carta gia' presente qui all'inizio del round non e' stata giocata adesso
     const int earlyLimit = static_cast<int>(sampledFrames * params.earlyFraction);
 
+    //candidate: carte riconosciute, esclusa la briscola ferma sul tavolo
+    std::vector<int> candidates;
     for (size_t i = 0; i < tracks.size(); ++i) {
         const CardTrack& t = tracks[i];
 
@@ -268,19 +288,35 @@ void selectPlayedTracks(const std::vector<CardTrack>& tracks,
         if (t.bestLabel() == 0)                          continue;
         if (t.namedSightings < params.minNamedSightings) continue;
 
-        //fra le candidate della stessa meta' tengo quella nominata piu' volte:
-        //e' la carta su cui il recognizer e' stato piu' sicuro piu' a lungo
-        if (t.half == Half::North) {
-            if (t.namedSightings > northScore) {
-                northScore = t.namedSightings;
-                northIndex = static_cast<int>(i);
-            }
-        } else {
-            if (t.namedSightings > southScore) {
-                southScore = t.namedSightings;
-                southIndex = static_cast<int>(i);
-            }
-        }
+        candidates.push_back(static_cast<int>(i));
+    }
+
+    if (candidates.empty())
+        return;
+
+    //tengo le due su cui il recognizer e' stato sicuro piu' a lungo
+    std::sort(candidates.begin(), candidates.end(),
+              [&tracks](int a, int b) {
+                  return tracks[a].namedSightings > tracks[b].namedSightings;
+              });
+
+    if (candidates.size() == 1) {
+        //una carta sola: senza un secondo termine di paragone resta il criterio assoluto
+        const int only = candidates[0];
+        if (tracks[only].half == Half::North) northIndex = only;
+        else                                  southIndex = only;
+        return;
+    }
+
+    //due carte: vale la posizione RELATIVA, non la meta' del fotogramma
+    const int a = candidates[0];
+    const int b = candidates[1];
+    if (tracks[a].centroid.y <= tracks[b].centroid.y) {
+        northIndex = a;
+        southIndex = b;
+    } else {
+        northIndex = b;
+        southIndex = a;
     }
 }
 

@@ -1,4 +1,4 @@
-﻿//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #include "../include/GameReport.h"
 #include "../include/GameRules.h"
 
@@ -6,10 +6,18 @@
 #include <iostream>
 #include <map>
 
+/*
+this module accumulates the rounds of a game and writes the deliverables: the
+per-round CSV in the format of the assignment and a readable TXT with the final
+scores and the overall winner
+*/
+
+//aggiunge un round e accredita i suoi punti al vincitore
 void GameReport::addRound(const RoundResult& round)
 {
     rounds_.push_back(round);
 
+    //in Briscola i punti della mano vanno tutti a chi la vince: nessuna divisione
     if (round.winner == Player::North)
         northScore_ += round.points;
     else
@@ -36,6 +44,7 @@ void GameReport::consolidateBriscola()
     if (votes.empty())
         return;
 
+    //la label piu' votata vince; basta un round letto bene per correggere gli altri 19
     int bestLabel = 0;
     int bestVotes = 0;
     for (const std::pair<const int, int>& kv : votes) {
@@ -45,6 +54,7 @@ void GameReport::consolidateBriscola()
         }
     }
 
+    //stampato per tenere d'occhio quanto e' solido il voto: 1 round su 20 e' fragile
     const Card briscola = cardFromLabel(bestLabel);
     std::cout << "Briscola della partita: " << cardName(briscola)
               << " (" << bestVotes << " round su " << rounds_.size() << ")" << std::endl;
@@ -54,9 +64,11 @@ void GameReport::consolidateBriscola()
     southScore_ = 0;
 
     for (RoundResult& r : rounds_) {
+        //flag di provenienza: true se in quel round la briscola non era stata letta cosi'
         r.briscolaFromCarry = (r.briscola != briscola);
         r.briscola = briscola;
 
+        //roundWinner vuole le carte in ordine di GIOCO, non di posizione sul tavolo
         PlayedCard first, second;
         if (r.leader == Player::North) {
             first  = PlayedCard{r.north, Player::North};
@@ -74,6 +86,7 @@ void GameReport::consolidateBriscola()
     }
 }
 
+//vincitore della partita; i punti in gioco sono 120, quindi il 60-60 e' possibile
 std::string GameReport::overallWinner() const
 {
     if (northScore_ > southScore_) return "North";
@@ -81,6 +94,7 @@ std::string GameReport::overallWinner() const
     return "Draw";
 }
 
+//CSV di consegna: una riga per round, stesso tracciato dei gameXresults.csv
 bool GameReport::writeCsv(const std::string& path) const
 {
     std::ofstream out(path);
@@ -106,6 +120,7 @@ bool GameReport::writeCsv(const std::string& path) const
     return true;
 }
 
+//TXT leggibile: stesso contenuto del CSV piu' totali e vincitore, come i gameXoutput.txt
 bool GameReport::writeTxt(const std::string& path) const
 {
     std::ofstream out(path);
@@ -116,6 +131,7 @@ bool GameReport::writeTxt(const std::string& path) const
 
     out << "Partita: " << gameName_ << "\n\n";
 
+    //la nota in coda dice perche' un round e' incompleto: serve a leggere gli errori
     for (const RoundResult& r : rounds_) {
         out << "Round " << r.round << ": "
             << "North " << cardName(r.north) << " | "

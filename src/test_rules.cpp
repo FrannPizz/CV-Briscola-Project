@@ -1,4 +1,4 @@
-//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 //
 // Test delle regole di gioco. Non usa OpenCV ne' i video: gira anche senza dataset.
 // Serve a essere sicuri che vincitore e punti siano giusti PRIMA di dare la colpa

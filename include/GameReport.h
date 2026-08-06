@@ -1,4 +1,4 @@
-//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #ifndef GAMEREPORT_H_INCLUDED
 #define GAMEREPORT_H_INCLUDED
 

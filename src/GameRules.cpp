@@ -1,4 +1,4 @@
-//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #include "../include/GameRules.h"
 
 Player roundWinner(const PlayedCard& first, const PlayedCard& second, const Card& briscola)

@@ -174,10 +174,17 @@ static int cmdGame(int argc, char** argv)
         //stampato bene in vista: sbagliare file di riferimento falserebbe tutte le metriche
         std::cout << "\nGround truth: " << opt.groundTruth << std::endl;
         const std::vector<GroundTruthRound> gt = loadGroundTruth(opt.groundTruth);
-        if (gt.empty())
+        if (gt.empty()) {
             std::cerr << "Ground truth vuoto o non leggibile: metriche saltate." << std::endl;
-        else
-            printMetrics(evaluate(report, gt));
+        } else {
+            const Metrics m = evaluate(report, gt);
+            printMetrics(m);
+
+            //le metriche vanno anche su file: sono materiale di consegna
+            const std::string metricsPath = opt.outDir + "/" + opt.game + "_metrics.txt";
+            writeMetrics(metricsPath, opt.game, opt.groundTruth, report, m);
+            std::cout << "Metriche: " << metricsPath << std::endl;
+        }
     }
 
     return 0;

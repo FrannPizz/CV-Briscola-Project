@@ -1,4 +1,4 @@
-//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #ifndef ROUNDANALYZER_H_INCLUDED
 #define ROUNDANALYZER_H_INCLUDED
 
@@ -66,7 +66,14 @@ struct AnalyzerParams {
     //ricerca della briscola sul frame intero
     int    briscolaFrames     = 3;    //quanti frame iniziali provare (voto di maggioranza)
     int    briscolaFeatures   = 4000; //keypoint ORB: il frame e' grande e pieno di tessuto
-    int    briscolaMinMatches = 25;   //match minimi perche' la lettura sia credibile
+    /*
+    Inlier minimi perche' la lettura sia credibile. Misurato: quando la briscola e'
+    leggibile gli inlier stanno sulle centinaia, quando non lo e' il rumore di fondo
+    arriva a 6-7. La soglia sta larga in mezzo, sul lato prudente: una briscola
+    sbagliata falsa il vincitore di TUTTI i round, mentre non leggerla lascia
+    semplicemente cadere la regola della briscola.
+    */
+    int    briscolaMinMatches = 15;
     double briscolaMinRatio   = 1.5;  //il migliore deve staccare il secondo di questo fattore
     //semi-lato del ritaglio attorno al mazzo, in frazioni della larghezza del frame:
     //restringere il campo toglie keypoint di sfondo e allarga il margine sul secondo
@@ -126,6 +133,13 @@ Indici delle due track giocate (North e South), -1 se non trovate.
 briscolaLabel: se una track ha questa label ED e' presente fin dall'inizio del
 round, e' la briscola sul tavolo e va esclusa. Se invece compare a meta' round
 e' la briscola giocata da un giocatore, e allora conta come carta giocata.
+
+L'assegnazione ai giocatori usa la posizione RELATIVA fra le due carte, non il
+campo Half (che divide il fotogramma a meta' esatta). I giocatori giocano verso
+il centro del tavolo e l'inquadratura non e' centrata sulla zona di gioco:
+misurato su game4, le due carte cadono a y=1017 e y=1412 su un fotogramma alto
+1920, quindi con la meta' assoluta finiscono entrambe South e una si perde.
+Il campo Half resta come ripiego quando di carta ne viene trovata una sola.
 */
 void selectPlayedTracks(const std::vector<CardTrack>& tracks,
                         int briscolaLabel,

@@ -1,4 +1,4 @@
-//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #ifndef CARD_H_INCLUDED
 #define CARD_H_INCLUDED
 

@@ -1,4 +1,4 @@
-//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #ifndef GAMERULES_H_INCLUDED
 #define GAMERULES_H_INCLUDED
 

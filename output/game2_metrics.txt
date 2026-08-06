@@ -1,0 +1,12 @@
+Metriche - game2
+Ground truth: ..\data/game2resultsCORRECTED.csv
+
+A_card     : 40/40  (100%)
+A_player   : 40/40  (100%)
+A_briscola : 1/1
+A_result   : 3/3  (100%)
+
+Dettaglio A_result:
+  vincitore      predetto South  |  atteso South  -> ok
+  punteggio North  predetto 59  |  atteso 59  -> ok
+  punteggio South  predetto 61  |  atteso 61  -> ok

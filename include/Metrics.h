@@ -1,4 +1,4 @@
-//Author: <il tuo nome>
+﻿//Author: Facco Filippo
 #ifndef METRICS_H_INCLUDED
 #define METRICS_H_INCLUDED
 
@@ -55,6 +55,19 @@ struct Metrics {
 //confronta le predizioni con il ground truth (accoppiando i round per numero)
 Metrics evaluate(const GameReport& report, const std::vector<GroundTruthRound>& groundTruth);
 
+//riepilogo a schermo
 void printMetrics(const Metrics& metrics);
+
+/*
+Stesso riepilogo su file: la consegna chiede le metriche fra i materiali consegnati,
+quindi non basta stamparle a video.
+gameName e groundTruthPath finiscono nell'intestazione, per sapere a posteriori quale
+partita e quale file di annotazioni hanno prodotto quei numeri.
+*/
+bool writeMetrics(const std::string& path,
+                  const std::string& gameName,
+                  const std::string& groundTruthPath,
+                  const GameReport& report,
+                  const Metrics& metrics);
 
 #endif
