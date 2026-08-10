@@ -1,4 +1,4 @@
-#include <opencv2/imgproc.hpp>
+﻿#include <opencv2/imgproc.hpp>
 #include <vector>
 #include <opencv2/core.hpp>
 
@@ -19,7 +19,7 @@ struct Params {
     double approxEpsRatio = 0.02;
     double minAspect      = 0.45;
     double maxAspect      = 0.68;
-    double minExtent      = 0.80;
+    double minExtent      = 0.50;
     int    medianKernel   = 5;
     int    closeKernel    = 5;
     double cannySigma     = 0.33;

@@ -4,24 +4,24 @@ Round 1: North 6 di Bastoni | South 4 di Spade | Briscola 3 di Coppe | Leader No
 Round 2: North 7 di Bastoni | South ?? | Briscola 3 di Coppe | Leader North | Winner North | Punti 0   [carta South non trovata; ]
 Round 3: North ?? | South 5 di Denari | Briscola 3 di Coppe | Leader South | Winner South | Punti 0   [carta North non trovata; ]
 Round 4: North 6 di Denari | South 10 di Denari | Briscola 3 di Coppe | Leader North | Winner South | Punti 4
-Round 5: North 2 di Denari | South 10 di Spade | Briscola 3 di Coppe | Leader South | Winner South | Punti 4
+Round 5: North ?? | South 10 di Spade | Briscola 3 di Coppe | Leader South | Winner South | Punti 4   [carta North non trovata; ]
 Round 6: North 2 di Coppe | South 1 di Coppe | Briscola 3 di Coppe | Leader North | Winner South | Punti 11
 Round 7: North 4 di Denari | South 7 di Coppe | Briscola 3 di Coppe | Leader South | Winner South | Punti 0
 Round 8: North 5 di Spade | South 3 di Bastoni | Briscola 3 di Coppe | Leader South | Winner South | Punti 10
 Round 9: North ?? | South 9 di Bastoni | Briscola 3 di Coppe | Leader South | Winner South | Punti 3   [carta North non trovata; ]
 Round 10: North 3 di Denari | South 4 di Bastoni | Briscola 3 di Coppe | Leader North | Winner North | Punti 10
-Round 11: North 6 di Spade | South 10 di Coppe | Briscola 3 di Coppe | Leader North | Winner South | Punti 4
+Round 11: North ?? | South 6 di Spade | Briscola 3 di Coppe | Leader South | Winner South | Punti 0   [carta North non trovata; ]
 Round 12: North 4 di Coppe | South 8 di Bastoni | Briscola 3 di Coppe (ereditata) | Leader South | Winner North | Punti 2
 Round 13: North 2 di Spade | South 7 di Denari | Briscola 3 di Coppe | Leader North | Winner North | Punti 0
-Round 14: North 8 di Spade | South 9 di Spade | Briscola 3 di Coppe | Leader North | Winner South | Punti 5
+Round 14: North ?? | South 8 di Spade | Briscola 3 di Coppe | Leader South | Winner South | Punti 2   [carta North non trovata; ]
 Round 15: North ?? | South 1 di Bastoni | Briscola 3 di Coppe | Leader South | Winner South | Punti 11   [carta North non trovata; ]
 Round 16: North 2 di Bastoni | South 8 di Denari | Briscola 3 di Coppe | Leader North | Winner North | Punti 2
 Round 17: North 3 di Spade | South 8 di Coppe | Briscola 3 di Coppe | Leader North | Winner South | Punti 12
 Round 18: North ?? | South 5 di Bastoni | Briscola 3 di Coppe | Leader South | Winner South | Punti 0   [carta North non trovata; ]
-Round 19: North 3 di Coppe | South 1 di Denari | Briscola 3 di Coppe | Leader South | Winner North | Punti 21
+Round 19: North ?? | South 1 di Denari | Briscola 3 di Coppe | Leader South | Winner South | Punti 11   [carta North non trovata; ]
 Round 20: North 1 di Spade | South 7 di Spade | Briscola 3 di Coppe | Leader North | Winner North | Punti 11
 
 Punteggio finale:
-  North: 46
-  South: 64
+  North: 25
+  South: 68
 Vincitore: South

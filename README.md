@@ -79,7 +79,12 @@ Opzioni:
 Se `--gt` non viene passato, il programma cerca da solo `<game>resultsCORRECTED.csv` e
 ripiega su `<game>results.csv`; stampa sempre quale file ha usato.
 
-Con `--step 5` una partita richiede circa 5-10 minuti, a seconda della macchina.
+Il valore consigliato di `--step` è il default 2. Alzarlo velocizza ma perde accuratezza:
+le carte giocate restano visibili poche decine di fotogrammi, e campionando troppo rado
+non si raccolgono abbastanza conferme per distinguerle dal rumore. Misurato su game3,
+passare da `--step 5` a `--step 2` vale 15 punti di `A_card`.
+
+Con `--step 2` una partita richiede circa 20-30 minuti, a seconda della macchina.
 
 ### `round` — analisi di un solo round
 
@@ -135,15 +140,42 @@ ed essendo costante per tutta la partita viene decisa a maggioranza sui 20 round
 **Regole e output** (`GameRules`, `GameReport`, `Metrics`) — moduli senza dipendenze da
 OpenCV, quindi verificabili senza video.
 
+## Risultati
+
+Misurati sui ground truth `*CORRECTED*`, con i parametri di default.
+
+| | A_card | A_player | A_briscola | A_result |
+|---|---|---|---|---|
+| game1 | 37/40 (92.5%) | 40/40 (100%) | 1/1 | 1/3 |
+| game2 | 40/40 (100%) | 40/40 (100%) | 1/1 | 3/3 |
+| game3 | 34/40 (85%) | 36/40 (90%) | 1/1 | 0/3 |
+| game4 | 40/40 (100%) | 40/40 (100%) | 0/1 | 3/3 |
+
 ## Limiti noti
 
-- **game3** è il sottoinsieme difficile: mani e sovrapposizioni impediscono al contorno
-  della carta di chiudersi, e il detector geometrico la perde. Circa un terzo dei round
-  viene letto per intero.
-- **La briscola di game4** non viene riconosciuta: è piccola nel fotogramma e coperta per
-  un terzo dal mazzo, e gli inlier non si distinguono dal rumore. Il sistema in questo
-  caso si astiene invece di indovinare, perché una briscola sbagliata falserebbe il
-  vincitore di tutti i round.
+Gli errori residui sono di due tipi, con cause distinte.
+
+- **Numero delle carte a pips** (3 errori, tutti su game1). Le carte numeriche dello
+  stesso seme hanno le figure ripetute identiche: ORB identifica sempre il seme
+  correttamente, ma fra `4 coins` e `6 coins` la differenza è *quanti* simboli ci sono,
+  informazione che i descrittori locali non contengono. La verifica geometrica con RANSAC
+  riduce il problema ma non lo elimina. Un rimedio sarebbe contare i pips sulla carta
+  rettificata, affiancando il conteggio al matching di feature.
+
+- **Carte non rilevate per occlusione** (5 errori, tutti su game3). Quando una mano copre
+  la carta o due carte si toccano, il contorno non si chiude e il filtro sull'extent la
+  scarta. È il limite strutturale di un detector basato sui contorni: un detector
+  addestrato (la pipeline YOLO in `training/`) non avrebbe questo vincolo.
+
+- **Numero della briscola su game4**. È piccola nel fotogramma e coperta per un terzo dal
+  mazzo: gli inlier non si distinguono dal rumore e il sistema si astiene invece di
+  indovinare. Il seme viene comunque letto correttamente, e siccome la regola del
+  vincitore usa solo il seme, questo non influisce su `A_player` né su `A_result`: game4
+  è al 100% su entrambe nonostante `A_briscola` sia 0/1.
+
+- **`A_result` è una metrica tutto-o-niente**: richiede i punteggi finali esatti, quindi
+  basta una carta sbagliata perché due dei tre campi risultino errati. Le partite a zero
+  errori (game2, game4) sono 3/3; game1, con 3 carte sbagliate su 40, è 1/3.
 
 ## Autori
 

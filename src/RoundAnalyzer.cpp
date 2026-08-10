@@ -281,6 +281,16 @@ void selectPlayedTracks(const std::vector<CardTrack>& tracks,
     for (size_t i = 0; i < tracks.size(); ++i) {
         const CardTrack& t = tracks[i];
 
+        /*
+        Una carta giocata COMPARE durante il round. Briscola, mazzo e mazzetti raccolti
+        sono sul tavolo fin dal primo fotogramma, quindi si escludono per tempo di
+        comparsa e non per identita': l'esclusione basata sulla label della briscola
+        fallisce quando la briscola e' stata letta male, ed e' cosi' che in game4 la
+        briscola finiva selezionata come carta di North.
+        */
+        if (t.firstFrame <= 2 * std::max(1, params.frameStep))
+            continue;
+
         //la briscola ferma sul tavolo va esclusa; se invece la stessa carta compare
         //a meta' round, vuol dire che e' stata pescata e giocata, e allora vale
         if (briscolaLabel != 0 && t.bestLabel() == briscolaLabel && t.firstFrame <= earlyLimit)

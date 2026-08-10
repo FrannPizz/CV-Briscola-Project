@@ -3,11 +3,11 @@ Round,North_Number,North_Suit,South_Number,South_Suit,Briscola_Number,Briscola_S
 2,3,clubs,7,clubs,1,clubs,South,North,10
 3,9,cups,10,spades,1,clubs,North,North,7
 4,10,cups,2,coins,1,clubs,North,North,4
-5,3,spades,2,clubs,1,clubs,North,South,10
+5,3,spades,,,1,clubs,North,North,10
 6,2,cups,7,cups,1,clubs,South,South,0
 7,4,clubs,1,coins,1,clubs,South,North,11
 8,5,cups,3,cups,1,clubs,North,South,10
-9,1,clubs,4,cups,1,clubs,South,North,11
+9,,,4,cups,1,clubs,South,South,0
 10,8,clubs,6,clubs,1,clubs,South,North,2
 11,4,coins,8,coins,1,clubs,North,South,2
 12,5,clubs,6,spades,1,clubs,South,North,0

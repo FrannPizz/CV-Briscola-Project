@@ -305,6 +305,11 @@ static int cmdFrame(int argc, char** argv)
         ++passExtent;
         if (asp < params.minAspect || asp > params.maxAspect) continue;
         ++passAspect;
+
+        //centro dei sopravvissuti: confrontandolo con le carte finali si vede
+        //quali vengono poi fusi dalla deduplica
+        std::cout << "      -> PASSA, centro=(" << static_cast<int>(rr.center.x)
+                  << "," << static_cast<int>(rr.center.y) << ")" << std::endl;
     }
     std::cout << "  -> dopo area("   << params.minAreaRatio << ".." << params.maxAreaRatio << "): " << passArea
               << " | dopo extent(>=" << params.minExtent << "): " << passExtent
