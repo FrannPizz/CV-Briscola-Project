@@ -1,12 +1,13 @@
-Metriche - game2
-Ground truth: ..\data/game2resultsCORRECTED.csv
+=== Metrics game2 ===
+Card recognition accuracy:      37/40 = 0.925
+Player identification accuracy: 40/40 = 1
+Briscola recognition accuracy:  1/1 = 1
+Game result accuracy:           3/3 = 1
 
-A_card     : 40/40  (100%)
-A_player   : 40/40  (100%)
-A_briscola : 1/1
-A_result   : 3/3  (100%)
+Predicted:    North 59  South 61  Winner south
+Ground truth: North 59  South 61  Winner south
 
-Dettaglio A_result:
-  vincitore      predetto South  |  atteso South  -> ok
-  punteggio North  predetto 59  |  atteso 59  -> ok
-  punteggio South  predetto 61  |  atteso 61  -> ok
+Errors (3):
+  Round 1: North card 6 coins (gt 7 coins)
+  Round 12: North card 7 coins (gt 7 cups)
+  Round 12: South card 7 cups (gt 6 coins)

@@ -1,5 +1,5 @@
 Round,North_Number,North_Suit,South_Number,South_Suit,Briscola_Number,Briscola_Suit,Leader,Winner,Points
-1,7,coins,10,clubs,4,spades,South,South,4
+1,6,coins,10,clubs,4,spades,South,South,4
 2,9,coins,5,coins,4,spades,South,North,3
 3,5,spades,6,spades,4,spades,North,South,0
 4,2,cups,8,clubs,4,spades,South,South,2
@@ -10,7 +10,7 @@ Round,North_Number,North_Suit,South_Number,South_Suit,Briscola_Number,Briscola_S
 9,5,clubs,9,spades,4,spades,North,South,3
 10,6,cups,2,clubs,4,spades,South,South,0
 11,3,spades,1,cups,4,spades,South,North,21
-12,7,cups,6,coins,4,spades,North,North,0
+12,7,coins,7,cups,4,spades,North,North,0
 13,3,clubs,10,spades,4,spades,North,South,14
 14,4,cups,1,coins,4,spades,South,South,11
 15,6,clubs,4,clubs,4,spades,South,North,0

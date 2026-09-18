@@ -1,12 +1,10 @@
-Metriche - game1
-Ground truth: ..\data/game1resultsCORRECTED.csv
+=== Metrics game1 ===
+Card recognition accuracy:      40/40 = 1
+Player identification accuracy: 40/40 = 1
+Briscola recognition accuracy:  1/1 = 1
+Game result accuracy:           3/3 = 1
 
-A_card     : 37/40  (92.5%)
-A_player   : 40/40  (100%)
-A_briscola : 1/1
-A_result   : 1/3  (33.3333%)
+Predicted:    North 53  South 67  Winner south
+Ground truth: North 53  South 67  Winner south
 
-Dettaglio A_result:
-  vincitore      predetto South  |  atteso South  -> ok
-  punteggio North  predetto 61  |  atteso 53  -> ERRATO
-  punteggio South  predetto 77  |  atteso 67  -> ERRATO
+Errors (0):

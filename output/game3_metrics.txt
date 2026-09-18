@@ -1,12 +1,16 @@
-Metriche - game3
-Ground truth: ..\data/game3resultsCORRECTED.csv
+=== Metrics game3 ===
+Card recognition accuracy:      37/40 = 0.925
+Player identification accuracy: 39/40 = 0.975
+Briscola recognition accuracy:  1/1 = 1
+Game result accuracy:           1/3 = 0.333333
 
-A_card     : 34/40  (85%)
-A_player   : 36/40  (90%)
-A_briscola : 1/1
-A_result   : 0/3  (0%)
+Predicted:    North 67  South 53  Winner north
+Ground truth: North 70  South 50  Winner north
 
-Dettaglio A_result:
-  vincitore      predetto South  |  atteso North  -> ERRATO
-  punteggio North  predetto 46  |  atteso 70  -> ERRATO
-  punteggio South  predetto 64  |  atteso 50  -> ERRATO
+Errors (6):
+  Round 3: North card 6 coins (gt 9 coins)
+  Round 3: South card 9 coins (gt 5 coins)
+  Round 3: winner south (gt north)
+  Round 4: North card 5 coins (gt 6 coins)
+  North score 67 (gt 70)
+  South score 53 (gt 50)
