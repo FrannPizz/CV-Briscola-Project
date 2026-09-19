@@ -1,22 +1,19 @@
-//Author: Francesco Pizzato
-
+//Author: Filippo Facco
 #include "../include/CardRecognizer.h"
-#include <opencv2/features2d.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <iostream>
-#include <stdexcept>
 
 /*
 this module recognize the detected card and associate it with the template with the highest number of good matches
 */
 
-//compute ORB keypoints and descriptors for a given grayscale image
-void computeORB(const cv::Mat& gray, std::vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors)
+//compute SIFT keypoints and descriptors for a given grayscale image
+void computeSIFT(const cv::Mat& gray, std::vector<cv::KeyPoint>& keypoints, cv::Mat& descriptors)
 {
-    //create an ORB detector and compute keypoints and descriptors
-    cv::Ptr<cv::ORB> orbPtr = cv::ORB::create();
-    cv::ORB& orb = *orbPtr;
-    orb.detectAndCompute(gray, cv::noArray(), keypoints, descriptors);
+    //create a SIFT detector and compute keypoints and descriptors
+    //(SIFT is scale and rotation invariant: portrait cards match the landscape templates)
+
+    cv::Ptr<cv::SIFT> siftPtr = cv::SIFT::create(); 
+    cv::SIFT& sift = *siftPtr;
+    sift.detectAndCompute(gray, cv::noArray(), keypoints, descriptors);
 }
 
 CardTemplate loadTemplate(const std::string& imagePath, const int& label)
@@ -27,10 +24,10 @@ CardTemplate loadTemplate(const std::string& imagePath, const int& label)
         throw std::runtime_error("Could not load template image: " + imagePath);
     }
 
-    //compute ORB keypoints and descriptors for the template image
+    //compute SIFT keypoints and descriptors for the template image
     std::vector<cv::KeyPoint> keypoints;
     cv::Mat descriptors;
-    computeORB(templateImage, keypoints, descriptors);
+    computeSIFT(templateImage, keypoints, descriptors);
 
     //return a CardTemplate struct containing the label, keypoints, and descriptors
     return CardTemplate{label, keypoints, descriptors};
@@ -40,8 +37,10 @@ std::vector<CardTemplate> loadTemplates()
 {
     std::vector<CardTemplate> templates;
 
-    //iterate through the expected template images (1 to 40)
-    for (int i = 1; i <= 40; ++i) {
+    //iterate through the template images (0 to 40)
+    //0.jpg is the card back with label 0 (= no match): yolo also finds the deck and the piles of won cards,
+    //and without it SIFT gives them the label of a card. It is the first one, so a card must have MORE matches to win
+    for (int i = 0; i <= 40; ++i) {
         std::string imagePath = "../data/template/" + std::to_string(i) + ".jpg";
         try {
             CardTemplate cardTemplate = loadTemplate(imagePath, i);
@@ -57,8 +56,12 @@ std::vector<CardTemplate> loadTemplates()
 int countGoodMatches(const cv::Mat& descA, const cv::Mat& descB)
 {
     
-    //use a bruteforce matcher with Hamming distance to find matches between descriptors
-    cv::BFMatcher matcher(cv::NORM_HAMMING);
+    //SIFT descriptors are float vectors: need at least 2 per side for knn with k=2
+    if (descA.rows < 2 || descB.rows < 2)
+        return 0;
+
+    //use a bruteforce matcher with L2 distance to find matches between descriptors
+    cv::BFMatcher matcher(cv::NORM_L2);
 
     //perform k nearest neighbors matching (k=2) to find the two best matches for each descriptor
     std::vector<std::vector<cv::DMatch>> knn;
@@ -79,10 +82,10 @@ int countGoodMatches(const cv::Mat& descA, const cv::Mat& descB)
 
 int recognize(const cv::Mat& card, const std::vector<CardTemplate>& templates)
 {
-    //compute ORB keypoints and descriptors for the input card image
+    //compute SIFT keypoints and descriptors for the input card image
     std::vector<cv::KeyPoint> cardKeypoints;
     cv::Mat cardDescriptors;
-    computeORB(card, cardKeypoints, cardDescriptors);
+    computeSIFT(card, cardKeypoints, cardDescriptors);
 
     //low threshold
     const int MIN_GOOD_MATCHES = 15;
@@ -105,6 +108,7 @@ int recognize(const cv::Mat& card, const std::vector<CardTemplate>& templates)
     }
 
     //if the best match is bad, no match
+    //(if the best template is the card back, bestLabel is already 0 = no match)
     if (maxGoodMatches < MIN_GOOD_MATCHES)
         return 0;
 

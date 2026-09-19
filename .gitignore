@@ -3,9 +3,5 @@ __pycache__/
 *.pyc
 .DS_Store
 
-data/videos/
-training/dataset/
-training/real_test/
-training/samples/
-training/samples_synth/
-training/runs/
+# videos are not included (see README), only the folder structure is kept
+data/videos/**/*.mp4

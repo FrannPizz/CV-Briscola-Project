@@ -4,7 +4,7 @@ project(BriscolaRecognizer)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(OpenCV_DIR "C:/msys64/ucrt64/lib/cmake/opencv4")
+#set(OpenCV_DIR "C:/msys64/ucrt64/lib/cmake/opencv4")
 
 find_package(OpenCV REQUIRED)
 
@@ -15,9 +15,13 @@ include_directories(
 
 add_executable(main
     src/main.cpp
-    src/CardDetector.cpp
+    src/readJSON.cpp
     src/CardRectifier.cpp
     src/CardRecognizer.cpp
+    src/MatchTheory.cpp
+    src/PerformanceMeasurement.cpp
+    src/Print.cpp
+    src/FixedMatch.cpp
 )
 
 target_link_libraries(main ${OpenCV_LIBS})

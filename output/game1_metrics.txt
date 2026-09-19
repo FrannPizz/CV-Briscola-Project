@@ -1,0 +1,10 @@
+=== Metrics game1 ===
+Card recognition accuracy:      40/40 = 1
+Player identification accuracy: 40/40 = 1
+Briscola recognition accuracy:  1/1 = 1
+Game result accuracy:           3/3 = 1
+
+Predicted:    North 53  South 67  Winner south
+Ground truth: North 53  South 67  Winner south
+
+Errors (0):

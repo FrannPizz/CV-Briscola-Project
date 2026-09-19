@@ -1,0 +1,15 @@
+=== Metrics game3 ===
+Card recognition accuracy:      38/40 = 0.95
+Player identification accuracy: 39/40 = 0.975
+Briscola recognition accuracy:  1/1 = 1
+Game result accuracy:           1/3 = 0.333333
+
+Predicted:    North 74  South 46  Winner north
+Ground truth: North 70  South 50  Winner north
+
+Errors (5):
+  Round 4: North card 10 coins (gt 6 coins)
+  Round 4: South card 6 coins (gt 10 coins)
+  Round 4: winner north (gt south)
+  North score 74 (gt 70)
+  South score 46 (gt 50)
