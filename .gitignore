@@ -1,11 +1,30 @@
+### Build ###
 build/
+*.o
+*.obj
+*.exe
+*.out
+
+### Python ###
 __pycache__/
 *.pyc
-.DS_Store
+.venv/
+venv/
 
-data/videos/
+### Dataset and training artifacts (not distributed) ###
+data/videos/*
+!data/videos/.gitkeep
 training/dataset/
 training/real_test/
 training/samples/
 training/samples_synth/
 training/runs/
+
+### IDE ###
+.vscode/
+.idea/
+*.iml
+
+### OS ###
+.DS_Store
+Thumbs.db

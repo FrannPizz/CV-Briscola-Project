@@ -1,46 +1,45 @@
 //Author: Francesco Pizzato
 #include "../include/CardRectifier.h"
-#include <opencv2/imgproc.hpp>
-#include <algorithm>
 
 /*
-this module trasnforms the detected card in a normlized retangle for comparisino with templates
+this module transforms the detected card in a normalized retangle for comparison with templates
 */
 
 //order the corners of the detected card in a consistent manner [TL, TR, BR, BL]
+//robust to ANY rotation: sort by angle around the centroid
 std::vector<cv::Point2f> orderCorners(const std::vector<cv::Point>& corners)
 {
-    // TL = min(x+y), BR = max(x+y), TR = max(x-y), BL = min(x-y)
-    cv::Point2f tl = corners[0], tr = corners[0], br = corners[0], bl = corners[0];
+    //centroid of the card (mean of the 4 corners)
+    cv::Point2f center(0.f, 0.f);
+    for (const cv::Point& p : corners)
+        center += cv::Point2f((float) p.x, (float) p.y);
+    center *= (1.0f / (float) corners.size());
 
-    double minSum  = corners[0].x + corners[0].y;
-    double maxSum  = minSum;
-    double minDiff = corners[0].x - corners[0].y;
-    double maxDiff = minDiff;
+    //copy to Point2f
+    std::vector<cv::Point2f> pts;
+    for (const cv::Point& p : corners)
+        pts.push_back(cv::Point2f((float) p.x, (float) p.y));
 
-    for (const cv::Point& pt : corners) {
-        double sum  = pt.x + pt.y;
-        double diff = pt.x - pt.y;
+    //sort by angle around the centroid 
+    std::sort(pts.begin(), pts.end(),
+        [&center](const cv::Point2f& a, const cv::Point2f& b) {
+            return std::atan2(a.y - center.y, a.x - center.x)
+                 < std::atan2(b.y - center.y, b.x - center.x);
+        });
 
-        if (sum < minSum) {
-            minSum = sum;
-            tl = pt;
-        }
-        if (sum > maxSum) {
-            maxSum = sum;
-            br = pt;
-        }
-        if (diff > maxDiff) {
-            maxDiff = diff;
-            tr = pt;
-        }
-        if (diff < minDiff) {
-            minDiff = diff;
-            bl = pt;
+    //start the sequence from the top-left corner 
+    int position = 0;
+    float bestSum = pts[0].x + pts[0].y;
+    for (int k = 1; k < (int) pts.size(); ++k) {
+        float s = pts[k].x + pts[k].y;
+        if (s < bestSum) {
+            bestSum = s;
+            position = k;
         }
     }
+    std::rotate(pts.begin(), pts.begin() + position, pts.end());
 
-    return { tl, tr, br, bl };
+    return pts;
 }
 
 //apply perspective transformation to rectify the detected card
@@ -70,6 +69,11 @@ cv::Mat rectify(const cv::Mat& frame, const std::vector<cv::Point>& corners)
     cv::Mat straightImage;
     //apply the perspective transformation to the original frame to obtain the rectified card image
     cv::warpPerspective(frame, straightImage, M, cv::Size(static_cast<int>(maxWidth), static_cast<int>(maxHeight)));
+
+    //normalize to portrait: cards are taller than wide.
+    //if it came out landscape (e.g. the horizontal briscola), rotate 90° -> portrait
+    if (straightImage.cols > straightImage.rows)
+        cv::rotate(straightImage, straightImage, cv::ROTATE_90_CLOCKWISE);
 
     return straightImage;
 }
